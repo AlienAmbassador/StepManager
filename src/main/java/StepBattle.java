@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class StepBattle {
    private StepsManager firstPlayer;
    private StepsManager secondPlayer;
