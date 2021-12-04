@@ -1,18 +1,16 @@
 import java.util.HashMap;
 
 public class StepsManager {
-    private int MAX_STEPS = 5000;
+    private int cnt;
     private HashMap<Integer, Integer> stat = new HashMap<>();
 
-    public void setDay(int day){
-        stat.put(day,0);
+    public StepsManager(int day, int steps) {
+        stat.put(day, steps);
+        this.cnt = steps;
     }
 
-    public int add(int day, int steps) {
-        if (!stat.containsKey(day)){
-            setDay(day);
-        }
-        stat.put(day, steps + stat.get(day));
-        return (MAX_STEPS - stat.get(day));
+    public int getCnt() {
+        return cnt;
     }
+
 }
