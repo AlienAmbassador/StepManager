@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.stream.Stream;
 import java.util.List;
 
 
@@ -52,5 +53,8 @@ public class StepsManager implements Comparable<StepsManager> {
         return firstStepManager - secondStepManager;
     }
 
+    public Stream<Integer> getAllAbove(int steps) {
+        return stat.stream().filter(i -> i > steps);
+    }
 
 }
