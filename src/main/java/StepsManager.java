@@ -7,10 +7,10 @@ public class StepsManager implements Comparable<StepsManager> {
     private List<Integer> stat = new ArrayList<>();
 
     public int getCnt(int day) {
-        if (day < 1 || day > stat.size()) {
-            return -1;
+        if (day < 1 || day > 365) {
+            throw new IllegalDayException(day);
         }
-        return stat.get(day - 1);
+        return day > stat.size() ? -1 : stat.get(day - 1);
     }
 
     public List<Integer> getCNT() {
@@ -18,16 +18,25 @@ public class StepsManager implements Comparable<StepsManager> {
     }
 
     public void addSteps(int steps) {
-        if (steps >= 0) {
-            stat.add(steps);
+        if (steps < 0) {
+            throw new IllegalStepsException(steps);
         }
+        stat.add(steps);
     }
 
-    public void add(int day, int steps) {
-        if ((day > stat.size() || day < 1) || steps < 0)
-            return;
+    public int add(int day, int steps) {
+        if (day < 1 || day > 365) {
+            throw new IllegalDayException(day);
+        }
+        if (steps < 0) {
+            throw new IllegalStepsException(steps);
+        }
+        if (day > stat.size()) {
+            return -1;
+        }
         int maxDay = stat.get(getMaxDay() - 1);
         stat.set(day - 1, stat.get(day - 1) + steps);
+        return Math.max((maxDay - stat.get(day - 1)) + 1, 0);
     }
 
     public int getMaxDay() {
@@ -54,6 +63,9 @@ public class StepsManager implements Comparable<StepsManager> {
     }
 
     public Stream<Integer> getAllAbove(int steps) {
+        if (steps < 0){
+            throw new IllegalStepsException(steps);
+        }
         return stat.stream().filter(i -> i > steps);
     }
 
