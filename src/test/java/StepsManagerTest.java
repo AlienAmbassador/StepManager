@@ -1,36 +1,48 @@
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
 
 public class StepsManagerTest {
-    StepsManager stepsManager = new StepsManager();
+    StepsManager firstManager = new StepsManager();
+    StepsManager secondManager = new StepsManager();
+    StepsManager thirdManager = new StepsManager();
 
-    @Test
-    public void addStepsInDict() {
-        stepsManager.add(4, 2000);
-        int actual = stepsManager.add(4, 1000);
-        int expected = 2000;
+    @ParameterizedTest
+    @CsvSource({"7000, 12000, 17000, -1", "8000, 8000, 16000, 0", "13000, 6000, 8000, 1"})
+    public void checkComparator(int steps1, int steps2, int min, int expected) {
+        StepsComparator comp = new StepsComparator(min);
 
-        Assertions.assertEquals(expected, actual);
+        firstManager.addSteps(steps1);
+        firstManager.addSteps(steps1 + 7000);
+        firstManager.addSteps(steps1 + 12000);
 
+        secondManager.addSteps(steps2);
+        secondManager.addSteps(steps2 + 7000);
+        secondManager.addSteps(steps2 + 12000);
+
+        int actual = comp.compare(firstManager, secondManager);
+        Assertions.assertEquals(expected, actual, "PedometerManagerDaysComparator class");
     }
 
     @Test
-    public void ifMaxStepsReached() {
-        stepsManager.add(5, 4500);
-        int actual = stepsManager.add(5, 1000);
-        int expected = -500;
-
-        Assertions.assertEquals(expected, actual);
+    public void stepsBelowZero() {
+        StepsManager stepsManager = new StepsManager();
+        Assertions.assertThrows(IllegalStepsException.class, () -> stepsManager.add(5, -300));
+    }
+    
+    @Test
+    public void dayTooBigValue() {
+        StepsManager stepsManager = new StepsManager();
+        Assertions.assertThrows(IllegalDayException.class, () -> stepsManager.add(367, 5000));
     }
 
     @Test
-    public void addedStepsSeveralTimes() {
-        for (int i = 0; i < 9; i++) {
-            stepsManager.add(6, 500);
-        }
-        int actual = stepsManager.add(6, 500);
-        int expected = 0;
-
-        Assertions.assertEquals(expected, actual);
+    public void dayBelowZero() {
+        StepsManager stepsManager = new StepsManager();
+        Assertions.assertThrows(IllegalDayException.class, () -> stepsManager.add(-1, 7000));
     }
+
+
 }
